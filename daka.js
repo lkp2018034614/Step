@@ -31,7 +31,7 @@ async function daka(info) {
   info['组织'] = userInfo['organization']
   info['性别'] = userInfo['gender']
   info['电话'] = userInfo['cellphone']
-  if ( !( info['姓名'] && info['path'] && info['组织'] && info['性别'] && info['电话'] ) ) {
+  if (!(info['姓名'] && info['path'] && info['组织'] && info['性别'] && info['电话'])) {
     throw new Error('用户信息不完整，请检查手机微哨【个人资料】的完成度')
   }
 

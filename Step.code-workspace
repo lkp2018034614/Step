@@ -8,6 +8,9 @@
 		}
 	],
 	"settings": {
-		"svn.ignoreMissingSvnWarning": true
+		"svn.ignoreMissingSvnWarning": true,
+		"code-runner.executorMap": {
+			"javascript": "node g:\\codesource\\Step\\main.js",
+		}
 	}
 }

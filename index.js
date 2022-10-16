@@ -97,7 +97,7 @@ const main = async () => {
   try {
     info = getInfo()
   } catch (error) {
-    sendQQ(error.message)
+    console.log(error.message);
     return
   }
   // return
