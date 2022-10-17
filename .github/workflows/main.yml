@@ -2,6 +2,7 @@ name: 小米运动步数提交
 
 on:
   schedule:
+    # min hour dayofmonth month dayofweek command   
     - cron: '20 05 * * *' # 每天在UTC时间东五区 北京时间东八区 
   workflow_dispatch: # 手动运行工作流程
 
