@@ -140,7 +140,7 @@ async function requestPromise(params) {
             console.log("=====================获取状态码");
             let reg = /error=(\d+)/
             if (reg.test(res.headers.location)) {
-                Msg += `<div style="color:#d03050;font-size:1.2em;">数据请求失败！！！]<br/>可能是账号或者密码错误!!!!\n错误码${RegExp.$1 + "\n"}<br></div>`
+                Msg += `<div style="color:#d03050;font-size:1.2em;">数据请求失败！！！<br/>可能是账号或者密码错误!!!!\n错误码${RegExp.$1 + "\n"}<br></div>`
                 Msg += `<div style="color:#d03050;font-size:0.8em;">${res.headers.location}</div><hr/>`
             }
             return res;
