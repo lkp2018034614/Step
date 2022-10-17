@@ -1,6 +1,14 @@
+// npm install yamljs
+/**
+* @description 主函数 
+*/
+
+const sendMail = require("./mail")
 const axios = require('axios')
 const YAML = require('yamljs') // yaml 解析
-const Msg = {}
+var Msg = ""
+var resule = "失败！！！"
+var text = ""
 const headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
 }
@@ -40,57 +48,49 @@ const get_info = () => {
             info = YAML.parse(infoStr)
         }
     } catch (error) {
-        return {
+        throw new Error({
             "code": 201,
-            "message": '配置信息错误，请检查信息是否有误！！！！！！'
-        };
+            "message": '配置信息错误，请检查信息是否有误！！！！！！',
+            "error": error
+        });
     }
     var user = info['用户名'];
     var pwd = info['密码'];
     var count = info['步数'];
     if (user == undefined) {
-        return {
-            "code": 207,
-            "message": '小米运动账号不能为空'
-        };
+        throw new Error("信息填写错误：小米运动账号不能为空")
     }
     if (pwd == undefined) {
-        return {
-            "code": 202,
-            "message": '小米运动密码不能为空'
-        };
+        throw new Error("信息填写错误：小米运动密码不能为空")
     }
     if (count == undefined) {
-        return {
-            "code": 205,
-            "message": '小米运动步数不能为空'
-        };
+        throw new Error("信息填写错误：小米运动步数不能为空")
     }
     // console.log("用户名", user.match(/^1[3456789]\d{9}$/)[0]);
     if (user.match(/^1[3456789]\d{9}$/) == 0) {
-        return {
-            "code": 203,
-            "message": '手机号格式错误！'
-        };
+        throw new Error("信息填写错误：手机号格式错误！")
     }
     if (parseInt(count) <= 0) {
-        return {
-            "code": 206,
-            "message": '步数格式错误！'
-        };
+        throw new Error("信息填写错误：步数要大于零。。。。=>>步数：count")
     }
     if (parseInt(count) > 99999) {
-        return {
-            "code": 204,
-            "message": '步数最大限制为99999'
-        };
+        throw new Error("信息填写错误：步数最大限制为99999")
     }
 
     if (info == {}) {
-        return {
-            "code": 209,
-            "message": "信息获取失败"
-        };
+        throw new Error("信息填写错误：信息获取失败，没有配置小米运动账号信息")
+    }
+    // 验证邮箱
+    if (info['邮箱']) {
+        const mailReg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")
+        if (!mailReg.test(info['邮箱'])) {
+            console.log('获取邮箱失败, 邮箱格式错误')
+            info['邮箱'] = null
+        } else {
+            console.log('获取邮箱成功')
+        }
+    } else {
+        console.log('获取邮箱失败, 未填写邮箱')
     }
     return info;
 
@@ -137,22 +137,18 @@ async function requestPromise(params) {
         maxRedirects: 0
     })
         .then(res => {
-            console.log("=====================");
-            if (res.status == 303) {
-                Msg["message"] = "数据请求失败！！！\n可能是账号或者密码错误!!!!"
-                Msg["data"] = params.body
-                Msg["code"] = res.status
-                console.log(Msg);
-                return "";
+            console.log("=====================获取状态码");
+            let reg = /error=(\d+)/
+            if (reg.test(res.headers.location)) {
+                Msg += `<div style="color:#d03050;font-size:1.2em;">数据请求失败！！！]<br/>可能是账号或者密码错误!!!!\n错误码${RegExp.$1 + "\n"}<br></div>`
+                Msg += `<div style="color:#d03050;font-size:0.8em;">${res.headers.location}</div><hr/>`
             }
             return res;
         })
         .catch(err => {
+            Msg += `<div style="color:#d03050;font-size:1.2em;">[数据请求失败！！！]<br/>可能是账号或者密码错误!!!!\n错误信息<br>${err}</div><hr/>`
             console.log(params.url, err)
             console.log(err);
-            Msg["message"] = err
-            Msg["code"] = err.code
-            throw Error(err)
         })
 }
 
@@ -173,7 +169,12 @@ async function login(user, password) {
         },
         method: 'POST',
     })
-    console.log('===========登陆成功===========\n获取个人信息\n')
+    console.log("res1====",typeof(res1.headers.location))
+    // Msg += `<div style="color:#d03050;font-size:1.5em;">${res1.headers.location}<br/></div><hr/>`
+    let reg = /(?<=access=).*?(?=&)/
+    if (! reg.test(res1.headers.location)) return 0, 0
+    console.log('===========登陆成功===========\n')
+    Msg += `<div style="color:#18a058;font-size:1.5em;">[登陆成功]<br/></div><hr/>`
     const code = get_code(res1.headers.location)
     const res2 = await requestPromise({
         url: 'https://account.huami.com/v2/client/login',
@@ -193,12 +194,13 @@ async function login(user, password) {
 
     const login_token = res2.data.token_info.login_token;
     const userid = res2.data.token_info.user_id;
-    console.log("用户名", res2.data.thirdparty_info.nickname);
+    console.log("", res2.data.thirdparty_info.nickname);
     console.log("邮件/电话", res2.data.thirdparty_info.email);
     console.log("用户id", userid);
-    Msg["name"] = res2.data.thirdparty_info.nickname
-    Msg["mail"] = res2.data.thirdparty_info.email
-    Msg["ID"] = userid
+    // Msg["name"] = res2.data.thirdparty_info.nickname
+    // Msg["mail"] = res2.data.thirdparty_info.email
+    // Msg["ID"] = userid
+    Msg += `<div style="color:#18a058;font-size:1.2em;">用户名：${res2.data.thirdparty_info.nickname}<br/>ID：${userid}</div><hr/>`
     console.log("获取成功\n\n\n\n");
     // console.log("res2.data.token_info",res2.data);
     return {
@@ -229,53 +231,64 @@ async function get_app_token(login_token) {
 }
 
 
-// 本地test
-process.env['INFO'] =
-    `
-用户名: "17687557486"
-密码: "hzhm459521"
-步数: "9999"
-`
+// // 本地test
+// process.env['INFO'] =
+//     `
+// 用户名: "17687557486"
+// 密码: "hzhm45952121"
+// 步数: "123"
+// 邮箱: "2957215080@qq.com"
+// `
 exports.main = async () => {
     var info = get_info();
-    let msg = {}
-    if (info['code'] == undefined) {
+    if (info) {
         console.log("个人信息获取成功！！！！");
-        Msg["message"] = `改变步数为 ${info["步数"]}`
-
+        Msg += `<div style="color:#18a058;font-size:1.2em;">${new Date()}<hr/>\n同步步数为=>${info["步数"]}</div><hr/>`
         let dataJson2 = json_data(info["步数"], new Date())
         // console.log(dataJson2);
         let { login_token = 0, userid } = await login(info["用户名"], info["密码"])
         if (login_token === 0) {
-            console.log('登陆失败！');
-            return "login fail!"
+            Msg += `<div style="color:#d03050;font-size:1.2em;"><br>[登陆失败！]<br/>login_token = ${login_token}</div><hr/>`
         }
-        const t = await get_time();
-        const app_token = await get_app_token(login_token);
-        const res = await requestPromise({
-            url: `https://api-mifit-cn.huami.com/v1/data/band_data.json?&t=${t}`,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.12(0x17000c2d) NetType/WIFI Language/zh_CN',
-                'apptoken': app_token,
-            },
-            body: {
-                'data_json': JSON.stringify(dataJson2),
-                'userid': userid,
-                'device_type': '0',
-                'last_sync_data_time': '1589917081',
-                'last_deviceid': 'DA932FFFFE8816E7',
-            },
-            method: "POST",
-        })
-        // console.log('finally request:', res.data)
-        // console.log(`改变步数为 ${info["步数"]}, 状态： ${res.data.message}`)
-        Msg["state"] = res.data.message
-        Msg["code"] = res.data.code
-        console.log("Msg=", Msg);
+        else {
+            const t = await get_time();
+            const app_token = await get_app_token(login_token);
+
+            resule = `尝试提交步数${info["步数"]}\n`
+            const res = await requestPromise({
+                url: `https://api-mifit-cn.huami.com/v1/data/band_data.json?&t=${t}`,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.12(0x17000c2d) NetType/WIFI Language/zh_CN',
+                    'apptoken': app_token,
+                },
+                body: {
+                    'data_json': JSON.stringify(dataJson2),
+                    'userid': userid,
+                    'device_type': '0',
+                    'last_sync_data_time': '1589917081',
+                    'last_deviceid': 'DA932FFFFE8816E7',
+                },
+                method: "POST",
+            })
+            Msg += `<div style="color:#18a058;font-size:1.2em;">状态：${res.data.message}</div><hr/>`
+        }
     }
     else {
         console.log("信息错误\n发送错误邮件邮件");
+        Msg["message"] = "个人信息配置错误\n请检查环境变量配置";
+        Msg["subject"] =
+            Msg["code"] = -1;
+        Msg["body"] = info;
         msg = info;
+    }
+    console.log("Msg=", Msg);
+    myMail = info["邮箱"] ? info["邮箱"] : conf["邮箱"]
+    if (myMail) {
+        console.log(`向${myMail}发送邮件！！！！`);
+        sendMail(myMail, resule, Msg)
+    }
+    else {
+        console.log(`邮箱没有配置，取消发送邮件。。。`);
     }
 }
 

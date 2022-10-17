@@ -15,7 +15,7 @@ let showtime = year + "-" + month + "-" + day;
 const config = {
   user: '2957215080@qq.com', // 邮箱帐号
   pass: 'cqecemtisqejdejd', // 邮箱授权码
-  from: '"Daka" <2957215080@qq.com>' // 发件人 昵称与邮箱
+  from: '"HH" <2957215080@qq.com>' // 发件人 昵称与邮箱
 }
 
 let transporter = nodemailer.createTransport({
@@ -43,15 +43,17 @@ function sendMail(to, subject, text) {
     subject: subject,
     // text: text,
     html: `
+
+    <div>
         <div
             style="border: 1px solid #dcdcdc;color: #676767;width: 600px; margin: 0 auto; padding-bottom: 50px;position: relative;">
             <div
                 style="height: 60px; background: #393d49; line-height: 60px; color: #58a36f; font-size: 18px;padding-left: 10px;">
-                微哨打卡  ${showtime}
+                小米运动步数修改  ${showtime}
             </div>
             <div style="padding: 25px">
                 <div style="padding-bottom: 20px;">
-                    ${text}
+                    ${text}<br>
                 </div>
                 <div style="padding: 5px; background: #f2f2f2;font-size: 12px;">如果你想停止该任务, 或不想收到此邮件请联系管理员
                     <a href="https://mail.qq.com/cgi-bin/frame_html?sid=74e__378XR4Z6Vk7&r=8fec0ee4a414af884f2e8592e818e97a">
@@ -66,7 +68,7 @@ function sendMail(to, subject, text) {
 `
   })
     .then(() => console.log('邮件发送成功!'))
-    .catch(err => console.log('邮件发送失败, ' + err.message))
+  .catch(err => console.log('邮件发送失败, ' + err.message))
 }
 
 module.exports = sendMail
