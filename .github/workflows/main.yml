@@ -4,7 +4,7 @@ on:
   schedule:
     # 每天在UTC时间东五区 北京时间东八区 
     # min hour dayofmonth month dayofweek command   
-    - cron: '21 30 * * *' 
+    - cron: '30 21 * * *' 
   workflow_dispatch: # 手动运行工作流程
 
 jobs:
