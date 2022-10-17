@@ -57,6 +57,8 @@ const get_info = () => {
     var user = info['用户名'];
     var pwd = info['密码'];
     var count = info['步数'];
+    var max = parseInt(info['MAX']);
+    var min = parseInt(info['MIN']);
     if (user == undefined) {
         throw new Error("信息填写错误：小米运动账号不能为空")
     }
@@ -70,11 +72,15 @@ const get_info = () => {
     if (user.match(/^1[3456789]\d{9}$/) == 0) {
         throw new Error("信息填写错误：手机号格式错误！")
     }
-    if (parseInt(count) <= 0) {
-        throw new Error("信息填写错误：步数要大于零。。。。=>>步数：count")
-    }
-    if (parseInt(count) > 99999) {
-        throw new Error("信息填写错误：步数最大限制为99999")
+    if (max && min) {
+        let tmax = Math.max(max, min)
+        let tmin = Math.min(max, min)
+        info['步数'] = (Math.floor(Math.random() * (parseInt(tmax) - parseInt(tmin) + 1)) + parseInt(tmin));
+        console.log("随机步数 ==>>>", info['步数']);
+    } else {
+        if (parseInt(count) <= 0) throw new Error("信息填写错误：步数要大于零。。。。=>>步数：count")
+
+        if (parseInt(count) > 99999) throw new Error("信息填写错误：步数最大限制为99999")
     }
 
     if (info == {}) {
@@ -169,10 +175,10 @@ async function login(user, password) {
         },
         method: 'POST',
     })
-    console.log("res1====",typeof(res1.headers.location))
+    console.log("res1====", res1.headers)
     // Msg += `<div style="color:#d03050;font-size:1.5em;">${res1.headers.location}<br/></div><hr/>`
     let reg = /(?<=access=).*?(?=&)/
-    if (! reg.test(res1.headers.location)) return 0, 0
+    if (!reg.test(res1.headers.location)) return 0, 0
     console.log('===========登陆成功===========\n')
     Msg += `<div style="color:#18a058;font-size:1.5em;">[登陆成功]<br/></div><hr/>`
     const code = get_code(res1.headers.location)
@@ -197,6 +203,7 @@ async function login(user, password) {
     console.log("", res2.data.thirdparty_info.nickname);
     console.log("邮件/电话", res2.data.thirdparty_info.email);
     console.log("用户id", userid);
+    console.log("账号信息\n", res2.data);
     // Msg["name"] = res2.data.thirdparty_info.nickname
     // Msg["mail"] = res2.data.thirdparty_info.email
     // Msg["ID"] = userid
@@ -215,7 +222,7 @@ async function get_time() {
         url: 'http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp',
         method: 'GET',
     });
-    // console.log('get_time res===', res.data.data.t)
+    console.log('get_time res===', res.data.data.t)
     return res.data.data.t;
 }
 
@@ -231,16 +238,19 @@ async function get_app_token(login_token) {
 }
 
 
-// // 本地test
-// process.env['INFO'] =
-//     `
-// 用户名: "17687557486"
-// 密码: "hzhm45952121"
-// 步数: "123"
-// 邮箱: "2957215080@qq.com"
-// `
+// 本地test
+process.env['INFO'] =
+    `
+用户名: "17687557486"
+密码: "hzhm459521"
+步数: "23559"
+MAX: "66666"
+MIN: "20000"
+邮箱: "2957215080@qq.com"
+`
 exports.main = async () => {
     var info = get_info();
+    console.log("配置信息==>>\n", info);
     if (info) {
         console.log("个人信息获取成功！！！！");
         Msg += `<div style="color:#18a058;font-size:1.2em;">${new Date()}<hr/>\n同步步数为=>${info["步数"]}</div><hr/>`
