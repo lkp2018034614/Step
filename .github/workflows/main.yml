@@ -2,7 +2,7 @@ name: 小米运动步数提交
 
 on:
   schedule:
-    - cron: '06 00 * * *' # 每天在UTC时间东五区 北京时间东八区 
+    - cron: '05 30 * * *' # 每天在UTC时间东五区 北京时间东八区 
   workflow_dispatch: # 手动运行工作流程
 
 jobs:
