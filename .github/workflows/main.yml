@@ -2,7 +2,7 @@ name: 自动打卡
 
 on:
   schedule:
-    - cron: '35 23 * * *' # 每天在UTC时间东五区 北京时间东八区 
+    - cron: '18 23 * * *' # 每天在UTC时间东五区 北京时间东八区 
   workflow_dispatch: # 手动运行工作流程
 
 jobs:
@@ -34,6 +34,5 @@ jobs:
       - name: 运行任务
         env:
           INFO: ${{ secrets.INFO }}
-          MAIL: ${{ secrets.MAIL }}
-        run: node index.js
+        run: node main.js
 
