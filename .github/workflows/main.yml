@@ -1,4 +1,4 @@
-name: 自动打卡
+name: 小米运动步数提交
 
 on:
   schedule:
