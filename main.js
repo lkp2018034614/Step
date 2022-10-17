@@ -237,6 +237,17 @@ async function get_app_token(login_token) {
     return res.data.token_info.app_token;
 }
 
+//util.js
+//获取当前utc时间戳
+function getUTCTime() {
+    let d1 = new Date();
+    let d2 = new Date(d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), d1.getUTCHours(), d1.getUTCMinutes(), d1.getUTCSeconds());
+    return Date.parse(d2);
+}
+
+//  console.log("东八区-北京时间：" + getLocalTime(8)); //东八区-北京时间：Wed May 25 2022 10:10:32 GMT+0800 (中国标准时间)
+//  console.log("西八区-太平洋时间（美国和加拿大）：" + getLocalTime(-8)); //西八区-太平洋时间（美国和加拿大）：Tue May 24 2022 18:10:32 GMT+0800 (中国标准时间)
+//  // i：要得到那个时区的时间就传几，东区为正数，西区为负数
 
 // 本地test
 process.env['INFO'] =
@@ -244,16 +255,22 @@ process.env['INFO'] =
 用户名: "17687557486"
 密码: "hzhm459521"
 步数: "23559"
-MAX: "66666"
-MIN: "20000"
+MAX: "35895"
+MIN: "11932"
 邮箱: "2957215080@qq.com"
 `
 exports.main = async () => {
     var info = get_info();
     console.log("配置信息==>>\n", info);
+    const date = new Date();
+
+    // ✅ 使用 UTC (= GMT) 时区获取表示给定日期的字符串。
+    const UTC_TIME = date.toUTCString();
+    Msg+=`<div style="color:#18a058;font-size:1.2em;">UTC时间：${UTC_TIME}</div><hr/>`
+    Msg+=`<div style="color:#18a058;font-size:1.2em;">GMT时间：${new Date()}<br></div><hr/>`
     if (info) {
         console.log("个人信息获取成功！！！！");
-        Msg += `<div style="color:#18a058;font-size:1.2em;">${new Date()}<hr/>\n同步步数为=>${info["步数"]}</div><hr/>`
+        Msg += `<div style="color:#18a058;font-size:1.2em;">同步步数为=>${info["步数"]}</div><hr/>`
         let dataJson2 = json_data(info["步数"], new Date())
         // console.log(dataJson2);
         let { login_token = 0, userid } = await login(info["用户名"], info["密码"])
