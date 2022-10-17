@@ -249,16 +249,16 @@ function getUTCTime() {
 //  console.log("西八区-太平洋时间（美国和加拿大）：" + getLocalTime(-8)); //西八区-太平洋时间（美国和加拿大）：Tue May 24 2022 18:10:32 GMT+0800 (中国标准时间)
 //  // i：要得到那个时区的时间就传几，东区为正数，西区为负数
 
-// 本地test
-process.env['INFO'] =
-    `
-用户名: "17687557486"
-密码: "hzhm459521"
-步数: "23559"
-MAX: "35895"
-MIN: "11932"
-邮箱: "2957215080@qq.com"
-`
+// // 本地test
+// process.env['INFO'] =
+//     `
+// 用户名: "17687557486"
+// 密码: "hzhm459521"
+// 步数: "23559"
+// MAX: "35895"
+// MIN: "11932"
+// 邮箱: "2957215080@qq.com"
+// `
 exports.main = async () => {
     var info = get_info();
     console.log("配置信息==>>\n", info);
