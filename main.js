@@ -69,9 +69,9 @@ const get_info = () => {
         throw new Error("信息填写错误：小米运动步数不能为空")
     }
     // console.log("用户名", user.match(/^1[3456789]\d{9}$/)[0]);
-    if (user.match(/^1[3456789]\d{9}$/) == 0) {
+/*  if (user.match(/^1[3456789]\d{9}$/) == 0) {
         throw new Error("信息填写错误：手机号格式错误！")
-    }
+    }*/
     if (max && min) {
         let tmax = Math.max(max, min)
         let tmin = Math.min(max, min)
