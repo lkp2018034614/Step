@@ -13,9 +13,9 @@ let showtime = year + "-" + month + "-" + day;
 
 // 献祭小号
 const config = {
-  user: '2957215080@qq.com', // 邮箱帐号
-  pass: 'cqecemtisqejdejd', // 邮箱授权码
-  from: '"HH" <2957215080@qq.com>' // 发件人 昵称与邮箱
+  user: '914513071@qq.com', // 邮箱帐号
+  pass: 'dzzazyyeufgtbbij', // 邮箱授权码
+  from: '"asdasd" <914513071@qq.com>' // 发件人 昵称与邮箱
 }
 
 let transporter = nodemailer.createTransport({
@@ -57,7 +57,7 @@ function sendMail(to, subject, text) {
                 </div>
                 <div style="padding: 5px; background: #f2f2f2;font-size: 12px;">如果你想停止该任务, 或不想收到前往
                     // <a href="https://mail.qq.com/cgi-bin/frame_html?sid=74e__378XR4Z6Vk7&r=8fec0ee4a414af884f2e8592e818e97a">
-                    <a href="https://github.com/hzxxqing/Step">
+                    <a href="https://github.com/lkp2018034614/Step">
                       GitHub
                     </a>修改
                 </div>
