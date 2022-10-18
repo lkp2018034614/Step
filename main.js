@@ -252,12 +252,12 @@ function getUTCTime() {
 // // 本地test
 // process.env['INFO'] =
 //     `
-// 用户名: "17687557486"
-// 密码: "hzhm459521"
-// 步数: "23559"
-// MAX: "35895"
-// MIN: "11932"
-// 邮箱: "2957215080@qq.com"
+// 用户名: ""
+// 密码: ""
+// 步数: ""
+// MAX: ""
+// MIN: ""
+// 邮箱: ""
 // `
 exports.main = async () => {
     var info = get_info();
@@ -308,7 +308,7 @@ exports.main = async () => {
         Msg["body"] = info;
         msg = info;
     }
-    console.log("Msg=", Msg);
+    console.log("Msg=\n", Msg);
     myMail = info["邮箱"] ? info["邮箱"] : conf["邮箱"]
     if (myMail) {
         console.log(`向${myMail}发送邮件！！！！`);

@@ -55,10 +55,11 @@ function sendMail(to, subject, text) {
                 <div style="padding-bottom: 20px;">
                     ${text}<br>
                 </div>
-                <div style="padding: 5px; background: #f2f2f2;font-size: 12px;">如果你想停止该任务, 或不想收到此邮件请联系管理员
-                    <a href="https://mail.qq.com/cgi-bin/frame_html?sid=74e__378XR4Z6Vk7&r=8fec0ee4a414af884f2e8592e818e97a">
-                        2957215080@qq.com
-                    </a>
+                <div style="padding: 5px; background: #f2f2f2;font-size: 12px;">如果你想停止该任务, 或不想收到前往
+                    // <a href="https://mail.qq.com/cgi-bin/frame_html?sid=74e__378XR4Z6Vk7&r=8fec0ee4a414af884f2e8592e818e97a">
+                    <a href="https://github.com/hzxxqing/Step">
+                      GitHub
+                    </a>修改
                 </div>
             </div>
             <div style="background: #fafafa; color: #b4b4b4;text-align: center; line-height: 45px; height: 45px; position: absolute; left: 0; bottom: 0;width: 100%;">
