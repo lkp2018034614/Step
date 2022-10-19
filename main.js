@@ -162,7 +162,7 @@ async function requestPromise(params) {
 async function login(user, password) {
     console.log("正在尝试登录.......\n");
     const res1 = await requestPromise({
-        url: `https://api-user.huami.com/registrations/+86${user}/tokens`,
+        url: `https://api-user.huami.com/registrations/${user}/tokens`,
         body: {
             "client_id": "HuaMi",
             "password": password,
